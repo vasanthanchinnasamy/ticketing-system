@@ -1,6 +1,5 @@
 package com.innovate.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.innovate.dto.Response;
-import com.innovate.dto.Status;
 import com.innovate.dto.Ticket;
 import com.innovate.service.TicketingSystemService;
 
@@ -33,7 +31,6 @@ public class TicketingSystemController {
 	public Map<String, Object> getAllTickets() {
 		return ticketingSystemService.getAllTicket();
 	}
-	
 	
 	@GetMapping("/getFilteredTickets")
 	public Map<String, Object> getFilteredTickets(@RequestBody Ticket ticket){

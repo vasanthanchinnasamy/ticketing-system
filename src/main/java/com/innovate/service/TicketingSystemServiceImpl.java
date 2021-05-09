@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
@@ -18,8 +21,13 @@ import org.springframework.stereotype.Service;
 
 import com.innovate.configuration.MessagingConfig;
 import com.innovate.dao.TicketDao;
+import com.innovate.dto.Customer;
+import com.innovate.dto.Priority;
 import com.innovate.dto.Response;
+import com.innovate.dto.Status;
 import com.innovate.dto.Ticket;
+import com.innovate.dto.User;
+import com.innovate.entity.MessageEntity;
 
 @Service
 public class TicketingSystemServiceImpl implements TicketingSystemService{
@@ -34,6 +42,40 @@ public class TicketingSystemServiceImpl implements TicketingSystemService{
 	public Map<String, Object> createTicket(Ticket ticket) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+
+			if(Objects.isNull(ticket.getAssignedToUserId())) {
+				Optional<Object> resultUser = ticketDao.assignTicketBasedOnLoad();
+				resultUser.ifPresent(userId->{
+					User user = new User();
+					user.setUserId(Long.parseLong(userId.toString()));
+					ticket.setAssignedToUser(user);
+				});
+			}else {
+				User user = new User();
+				user.setUserId(ticket.getAssignedToUserId());
+				ticket.setAssignedToUser(user);
+			}
+			
+			if(!Objects.isNull(ticket.getCreatedByUserId())) {
+				User user = new User();
+				user.setUserId(ticket.getCreatedByUserId());
+				ticket.setCreatedByUser(user);
+			}
+			if(!Objects.isNull(ticket.getPriorityId())) {
+				Priority priority = new Priority();
+				priority.setPriorityId(ticket.getPriorityId());
+				ticket.setPriority(priority);
+			}
+			if(!Objects.isNull(ticket.getStatusId())) {
+				Status status = new Status();
+				status.setStatusId(ticket.getStatusId());
+				ticket.setStatus(status);
+			}
+			if(!Objects.isNull(ticket.getCustomerId())) {
+				Customer customer = new Customer();
+				customer.setCustomerId(ticket.getCustomerId());
+				ticket.setCustomer(customer);
+			}
 			resultMap.put("result", ticketDao.addTicket(ticket));
 		}catch(Exception exception) {
 			resultMap.put("error", exception);
@@ -146,9 +188,9 @@ public class TicketingSystemServiceImpl implements TicketingSystemService{
 	public Map<String, Object> addResponse(Long ticketId, String responseText) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			Ticket ticket =  ticketDao.getTicket(ticketId);
 			resultMap.put("result", ticketDao.addResponse(ticketId, responseText));
-			template.convertAndSend(MessagingConfig.EXCHANGE, MessagingConfig.ROUTING_KEY, new Response(responseText,ticketId,null));
-			
+			Optional.ofNullable(ticket.getCustomer()).ifPresent(customer->template.convertAndSend(MessagingConfig.EXCHANGE, MessagingConfig.EMAIL_ROUTING_KEY, new MessageEntity(responseText,ticketId,customer.getEmailAddress())));
 		}catch(Exception exception) {
 			resultMap.put("error", exception);
 			resultMap.put("status", Boolean.FALSE);

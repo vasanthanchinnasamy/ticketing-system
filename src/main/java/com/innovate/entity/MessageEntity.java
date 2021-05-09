@@ -2,6 +2,8 @@ package com.innovate.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Transient;
+
 public class MessageEntity {
 	
 	
@@ -10,6 +12,12 @@ public class MessageEntity {
 	private int month;
 	
 	private int date;
+	
+	private String responseText;
+	
+	private Long ticketId;
+	
+	private String emailAddress;
 
 	public int getYear() {
 		return year;
@@ -34,6 +42,31 @@ public class MessageEntity {
 	public void setDate(int date) {
 		this.date = date;
 	}
+	
+
+	public String getResponseText() {
+		return responseText;
+	}
+
+	public void setResponseText(String responseText) {
+		this.responseText = responseText;
+	}
+
+	public Long getTicketId() {
+		return ticketId;
+	}
+
+	public void setTicketId(Long ticketId) {
+		this.ticketId = ticketId;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
 
 	public MessageEntity(int year, int month, int date) {
 		super();
@@ -42,6 +75,14 @@ public class MessageEntity {
 		this.date = date;
 	}
 	
+	
+	public MessageEntity(String responseText, Long ticketId, String emailAddress) {
+		super();
+		this.responseText = responseText;
+		this.ticketId = ticketId;
+		this.emailAddress = emailAddress;
+	}
+
 	public MessageEntity() {
 		super();
 	}

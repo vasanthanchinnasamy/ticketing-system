@@ -47,7 +47,11 @@ public class Ticket {
     @JoinColumn(name = "created_by_user_id")
 	private User createdByUser;
 	
-	private Long customerId;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customer_id")
+	private Customer customer;
+	
 	
 //	@JsonManagedReference(value="assignedToUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -85,6 +89,8 @@ public class Ticket {
 	private Long assignedToUserId;
 	@Transient
 	private Long createdByUserId;
+	@Transient
+	private Long customerId;
 
 	public Long getTicketId() {
 		return ticketId;
@@ -220,6 +226,14 @@ public class Ticket {
 
 	public void setCreatedByUserId(Long createdByUserId) {
 		this.createdByUserId = createdByUserId;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	@Override

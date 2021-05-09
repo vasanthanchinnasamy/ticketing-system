@@ -22,13 +22,10 @@ public class TicketingSystemConsumer {
 	@Autowired
 	private TicketingSystemService ticketingSystemService;
 	
-    @Autowired
-    private RabbitTemplate template;
-	
-    @RabbitListener(queues = MessagingConfig.QUEUE)
-    public void consumeMessageFromQueue(Response response) throws IOException {
+    @RabbitListener(queues = MessagingConfig.EMAIL_QUEUE)
+    public void consumeMessageFromEmailQueue(MessageEntity response) throws IOException {
         System.out.println("Message recieved from queue : " + response);
-			EmailUtility.sendResponseMail(response.getTicketId(), response.getResponseText());
+			EmailUtility.sendResponseMail(response.getTicketId(), response.getResponseText(),response.getEmailAddress());
     }
     
     @RabbitListener(queues = MessagingConfig.CLOSE_TASK_QUEUE)

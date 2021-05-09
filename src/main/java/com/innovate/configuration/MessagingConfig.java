@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MessagingConfig {
 
-    public static final String QUEUE = "ticketingsystem_queue";
+    public static final String EMAIL_QUEUE = "ticketingsystem_email_queue";
     public static final String CLOSE_TASK_QUEUE = "ticketingsystem_close_task_queue";
     public static final String EXCHANGE = "ticketingsystem_exchange";
-    public static final String ROUTING_KEY = "ticketingsystem_routingKey";
+    public static final String EMAIL_ROUTING_KEY = "ticketingsystem_routingKey";
     public static final String CLOSE_TASK_ROUTING_KEY = "ticketingsystem_closetask_routingKey";
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE);
+    public Queue emailQueue() {
+        return new Queue(EMAIL_QUEUE);
     }
     
     @Bean
@@ -34,8 +34,8 @@ public class MessagingConfig {
     }
 
     @Bean
-    public Binding binding(@Qualifier("queue") Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    public Binding emailBinding(@Qualifier("emailQueue") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(EMAIL_ROUTING_KEY);
     }
     
     @Bean

@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
+import com.innovate.dto.Customer;
 import com.innovate.dto.Priority;
 import com.innovate.dto.Response;
 import com.innovate.dto.Status;
@@ -31,18 +32,6 @@ public class TicketDaoImpl implements TicketDao{
 
 	@Override
 	public Ticket addTicket(Ticket ticket) {
-		if(Objects.isNull(ticket.getAssignedToUserId())) {
-			Optional<Object> resultUser = assignTicketBasedOnLoad();
-			resultUser.ifPresent(userId->{
-				User user = new User();
-				user.setUserId(Long.parseLong(userId.toString()));
-				ticket.setAssignedToUser(user);
-			});
-		}else {
-			User user = new User();
-			user.setUserId(ticket.getAssignedToUserId());
-			ticket.setAssignedToUser(user);
-		}
 		entityManager.persist(ticket);
 		return ticket;
 	}
@@ -133,7 +122,11 @@ public class TicketDaoImpl implements TicketDao{
 			ticket.setStatus(status);
 			ticket.setStatusUpdatedAt(LocalDateTime.now());
 		} 
-		if(!jsonObject.isNull("customerId")) ticket.setCustomerId(jsonObject.getLong("customerId"));
+		if(!jsonObject.isNull("customerId")) {
+			Customer customer = new Customer();
+			customer.setCustomerId(jsonObject.getLong("customerId"));
+			ticket.setCustomer(customer);
+		} 
 		if(!jsonObject.isNull("title")) ticket.setTitle(jsonObject.getString("title"));
 		if(!jsonObject.isNull("description")) ticket.setDescription(jsonObject.getString("description"));
 		if(!jsonObject.isNull("createdByUser")) {
