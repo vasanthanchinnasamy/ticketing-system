@@ -1,5 +1,6 @@
 package com.innovate.dao;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,11 @@ import javax.transaction.Transactional;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
+import com.innovate.dto.Priority;
 import com.innovate.dto.Response;
+import com.innovate.dto.Status;
 import com.innovate.dto.Ticket;
+import com.innovate.dto.User;
 
 @Repository
 @Transactional
@@ -37,9 +41,9 @@ public class TicketDaoImpl implements TicketDao{
 
 
 	@Override
-	public List<Ticket> getFilteredTickets(String assignedToUser, Long customerId, Long statusId) {
-		return entityManager.createQuery("SELECT t FROM Ticket t where t.assignedToUser=:assignedToUser "
-				+ "or t.customerId=:customerId or t.statusId=:statusId",Ticket.class)
+	public List<Ticket> getFilteredTickets(Long assignedToUser, Long customerId, Long statusId) {
+		return entityManager.createQuery("SELECT t FROM Ticket t where t.assignedToUser.userId=:assignedToUser "
+				+ "or t.customerId=:customerId or t.status.statusId=:statusId",Ticket.class)
 				.setParameter("assignedToUser", assignedToUser)
 				.setParameter("customerId", customerId)
 				.setParameter("statusId", statusId)
@@ -61,7 +65,7 @@ public class TicketDaoImpl implements TicketDao{
 
 	@Override
 	public int updateStatus(Long ticketId,Long statusId) {
-		return entityManager.createQuery("UPDATE Ticket t SET t.statusId=:statusId,t.statusUpdatedAt=:statusUpdatedAt where t.ticketId=:ticketId  and t.deleteKey=:deleteKey")
+		return entityManager.createQuery("UPDATE Ticket t SET t.status.statusId=:statusId,t.statusUpdatedAt=:statusUpdatedAt where t.ticketId=:ticketId  and t.deleteKey=:deleteKey")
 		.setParameter("statusId", statusId)
 		.setParameter("ticketId", ticketId)
 		.setParameter("deleteKey", Boolean.FALSE)
@@ -71,8 +75,8 @@ public class TicketDaoImpl implements TicketDao{
 
 
 	@Override
-	public int assignTicket(Long ticketId, String assignedToUser) {
-		return entityManager.createQuery("UPDATE Ticket t SET t.assignedToUser=:assignedToUser where t.ticketId=:ticketId and t.deleteKey=:deleteKey")
+	public int assignTicket(Long ticketId, Long assignedToUser) {
+		return entityManager.createQuery("UPDATE Ticket t SET t.assignedToUser.userId=:assignedToUser where t.ticketId=:ticketId and t.deleteKey=:deleteKey")
 				.setParameter("assignedToUser", assignedToUser)
 				.setParameter("ticketId", ticketId)
 				.setParameter("deleteKey", Boolean.FALSE)
@@ -103,18 +107,46 @@ public class TicketDaoImpl implements TicketDao{
 		Ticket ticket = entityManager.find(Ticket.class, ticketId);
 		JSONObject jsonObject = new JSONObject(inputData);
 		if(!jsonObject.isNull("type")) ticket.setType(jsonObject.getLong("type"));
-		if(!jsonObject.isNull("priorityId")) ticket.setPriorityId(jsonObject.getLong("priorityId"));
+		if(!jsonObject.isNull("priorityId")) {
+			Priority priority = new Priority();
+			priority.setPriorityId(jsonObject.getLong("priorityId"));
+			ticket.setPriority(priority);
+			
+		} 
 		if(!jsonObject.isNull("statusId")) {
-			ticket.setStatusId(jsonObject.getLong("statusId"));
+			Status status = new Status();
+			status.setStatusId(jsonObject.getLong("statusId"));
+			ticket.setStatus(status);
 			ticket.setStatusUpdatedAt(LocalDateTime.now());
 		} 
 		if(!jsonObject.isNull("customerId")) ticket.setCustomerId(jsonObject.getLong("customerId"));
 		if(!jsonObject.isNull("title")) ticket.setTitle(jsonObject.getString("title"));
-		if(!jsonObject.isNull("description")) ticket.setTitle(jsonObject.getString("description"));
-		if(!jsonObject.isNull("createdByUser")) ticket.setTitle(jsonObject.getString("createdByUser"));
-		if(!jsonObject.isNull("assignedToUser")) ticket.setTitle(jsonObject.getString("assignedToUser"));
+		if(!jsonObject.isNull("description")) ticket.setDescription(jsonObject.getString("description"));
+		if(!jsonObject.isNull("createdByUser")) {
+			User user = new User();
+			user.setUserId(jsonObject.getLong("createdByUser"));
+			ticket.setCreatedByUser(user);
+			
+		} 
+		if(!jsonObject.isNull("assignedToUser")) {
+			User user = new User();
+			user.setUserId(jsonObject.getLong("createdByUser"));
+			ticket.setAssignedToUser(user);
+		} 
 		entityManager.merge(ticket);
 		return ticket;
+	}
+
+
+	@Override
+	public int closeResolvedTasks(LocalDateTime dateBefore30Days) {
+		int updateCount = entityManager.createQuery("UPDATE Ticket t SET t.status.statusId=:closedStatus where t.statusUpdatedAt<=:statusUpdatedAt "
+				+ "and t.status.statusId=:resolvedStatus")
+				.setParameter("statusUpdatedAt", dateBefore30Days)
+				.setParameter("resolvedStatus", 4L)
+				.setParameter("closedStatus", 5L)
+				.executeUpdate();
+		return updateCount;
 	}
 
 }

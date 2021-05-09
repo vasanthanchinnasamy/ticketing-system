@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.innovate.dto.Response;
+import com.innovate.dto.Status;
 import com.innovate.dto.Ticket;
 import com.innovate.service.TicketingSystemService;
 
@@ -36,7 +37,7 @@ public class TicketingSystemController {
 	
 	@GetMapping("/getFilteredTickets")
 	public Map<String, Object> getFilteredTickets(@RequestBody Ticket ticket){
-		return ticketingSystemService.getFilteredTickets(ticket.getAssignedToUser(), ticket.getCustomerId(), ticket.getStatusId());
+		return ticketingSystemService.getFilteredTickets(ticket.getAssignedToUserId(), ticket.getCustomerId(), ticket.getStatusId());
 	}
 	
 	@GetMapping("/getTicket/{ticketId}")
@@ -61,7 +62,7 @@ public class TicketingSystemController {
 	
 	@PutMapping("/assignTicket")
 	public Map<String, Object> assignTicket(@RequestBody Ticket ticket) {
-		return ticketingSystemService.assignTicket(ticket.getTicketId(), ticket.getAssignedToUser());
+		return ticketingSystemService.assignTicket(ticket.getTicketId(), ticket.getAssignedToUserId());
 	}
 	
 	@PutMapping("/deleteTicket/{ticketId}")

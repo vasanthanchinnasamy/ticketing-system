@@ -1,15 +1,21 @@
 package com.innovate;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.innovate.controller.TicketingSystemController;
 import com.innovate.dao.TicketDao;
 import com.innovate.dto.Priority;
+import com.innovate.dto.Status;
 import com.innovate.dto.Ticket;
+import com.innovate.dto.User;
 import com.innovate.service.TicketingSystemService;
 
 @SpringBootTest
@@ -17,18 +23,35 @@ class TicketingSystemApplicationTests {
 	
 	@Autowired
 	private TicketDao ticketDao;
+	
+	@Autowired
+	private TicketingSystemController ticketingSystemController;
+	
+	
 
 	@Test
 	void contextLoads() {
 		
 		Ticket ticket = new Ticket();
-		ticket.setTitle("Priority Check 3");
+		ticket.setTitle("Priority Check 1");
 		Priority p = new Priority();
-//		p.setPriorityName("High");
-		p.setPriorityId(29);
-//		ticket.setPriority(p);
-		ticketDao.addTicket(ticket);
+		p.setPriorityId(1);
+		ticket.setPriority(p);
 		
+		Status status = new Status();
+		status.setStatusId(1);
+		ticket.setStatus(status);
+		
+		User user = new User();
+		user.setUserId(1);
+		ticket.setCreatedByUser(user);
+		
+		User user1 = new User();
+		user1.setUserId(2);
+		ticket.setAssignedToUser(user1);
+		
+				
+		ticketDao.addTicket(ticket);
 		
 //		Ticket ticket2 = new Ticket();
 //		ticket2.setTitle("132 update check"+ ZonedDateTime.now());
@@ -44,5 +67,23 @@ class TicketingSystemApplicationTests {
 //		ticketDao.deleteTicket(1L);
 		System.out.println(ticket);
 	}
+	
+	
+	@Test
+	void getAllTickets() {
+		Map<String, Object> resultMap = ticketingSystemController.getAllTickets();
+		System.out.println(resultMap);
+		
+	}
+	
+	@Test
+	void closeResolvedTasks() {
+		LocalDateTime dateBefore30Days = LocalDate.now().minusDays(30).atTime(0, 0);
+		int ticketList = ticketDao.closeResolvedTasks(dateBefore30Days);
+		System.out.println(ticketList);
+		
+	}
+	
+	
 
 }

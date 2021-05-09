@@ -59,7 +59,7 @@ public class TicketingSystemServiceImpl implements TicketingSystemService{
 	}
 
 	@Override
-	public Map<String, Object> getFilteredTickets(String assignedToUser, Long customerId, Long statusId) {
+	public Map<String, Object> getFilteredTickets(Long assignedToUser, Long customerId, Long statusId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			resultMap.put("result", ticketDao.getFilteredTickets(assignedToUser, customerId, statusId));
@@ -115,7 +115,7 @@ public class TicketingSystemServiceImpl implements TicketingSystemService{
 	}
 
 	@Override
-	public Map<String, Object> assignTicket(Long ticketId, String assignedToUser) {
+	public Map<String, Object> assignTicket(Long ticketId, Long assignedToUser) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			resultMap.put("result", ticketDao.assignTicket(ticketId, assignedToUser));
@@ -164,6 +164,22 @@ public class TicketingSystemServiceImpl implements TicketingSystemService{
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			resultMap.put("result", ticketDao.updateTicket(jsonObject.getLong("ticketId"), inputData));
+		}catch(Exception exception) {
+			resultMap.put("error", exception);
+			resultMap.put("status", Boolean.FALSE);
+		}
+		resultMap.put("status", Boolean.TRUE);
+		
+		return resultMap;
+	}
+
+
+	@Override
+	public Map<String, Object> closeResolvedTasks(LocalDateTime dateBefore30Days) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			resultMap.put("result", ticketDao.closeResolvedTasks(dateBefore30Days));
+			
 		}catch(Exception exception) {
 			resultMap.put("error", exception);
 			resultMap.put("status", Boolean.FALSE);

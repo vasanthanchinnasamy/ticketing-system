@@ -1,17 +1,29 @@
 package com.innovate.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Where;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Where(clause = "delete_key = false")
@@ -27,25 +39,49 @@ public class Ticket {
 	
 	private String description;
 	
-	private String createdByUser;
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "created_by_user_id")
+	private User createdByUser;
 	
 	private Long customerId;
 	
-	private String assignedToUser;
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "assigned_to_user_id")
+	private User assignedToUser;
 	
-	private Long priorityId;
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "priority_id")
+	private Priority priority;
 	
-	
-//	@OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "priority_id", referencedColumnName = "priorityId")
-//	private Priority priority;
-	
-	private Long statusId;
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id")
+	private Status status;
 	
 	@Basic
 	private LocalDateTime statusUpdatedAt;	
 	
 	private Boolean deleteKey = Boolean.FALSE;
+	
+	@OneToMany(
+            mappedBy = "ticket",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<Response> responses = new ArrayList<>();
+	
+	
+	@Transient
+	private Long priorityId;
+	@Transient
+	private Long statusId;
+	@Transient
+	private Long assignedToUserId;
+	@Transient
+	private Long createdByUserId;
 
 	public Long getTicketId() {
 		return ticketId;
@@ -79,13 +115,6 @@ public class Ticket {
 		this.description = description;
 	}
 
-	public String getCreatedByUser() {
-		return createdByUser;
-	}
-
-	public void setCreatedByUser(String createdByUser) {
-		this.createdByUser = createdByUser;
-	}
 
 	public Long getCustomerId() {
 		return customerId;
@@ -95,12 +124,67 @@ public class Ticket {
 		this.customerId = customerId;
 	}
 
-	public String getAssignedToUser() {
+
+	public LocalDateTime getStatusUpdatedAt() {
+		return statusUpdatedAt;
+	}
+
+	public void setStatusUpdatedAt(LocalDateTime statusUpdatedAt) {
+		this.statusUpdatedAt = statusUpdatedAt;
+	}
+
+	public Boolean getDeleteKey() {
+		return deleteKey;
+	}
+
+	public void setDeleteKey(Boolean deleteKey) {
+		this.deleteKey = deleteKey;
+	}
+	
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	
+
+	public User getCreatedByUser() {
+		return createdByUser;
+	}
+
+	public void setCreatedByUser(User createdByUser) {
+		this.createdByUser = createdByUser;
+	}
+
+	public User getAssignedToUser() {
 		return assignedToUser;
 	}
 
-	public void setAssignedToUser(String assignedToUser) {
+	public void setAssignedToUser(User assignedToUser) {
 		this.assignedToUser = assignedToUser;
+	}
+
+	public Ticket() {
+		super();		
+	}
+	
+
+	public List<Response> getResponses() {
+		return responses;
+	}
+
+	public void setResponses(List<Response> responses) {
+		this.responses = responses;
 	}
 
 	public Long getPriorityId() {
@@ -119,48 +203,20 @@ public class Ticket {
 		this.statusId = statusId;
 	}
 
-	public LocalDateTime getStatusUpdatedAt() {
-		return statusUpdatedAt;
+	public Long getAssignedToUserId() {
+		return assignedToUserId;
 	}
 
-	public void setStatusUpdatedAt(LocalDateTime statusUpdatedAt) {
-		this.statusUpdatedAt = statusUpdatedAt;
+	public void setAssignedToUserId(Long assignedToUserId) {
+		this.assignedToUserId = assignedToUserId;
 	}
 
-	public Boolean getDeleteKey() {
-		return deleteKey;
+	public Long getCreatedByUserId() {
+		return createdByUserId;
 	}
 
-	public void setDeleteKey(Boolean deleteKey) {
-		this.deleteKey = deleteKey;
-	}
-	
-//	public Priority getPriority() {
-//		return priority;
-//	}
-//
-//	public void setPriority(Priority priority) {
-//		this.priority = priority;
-//	}
-
-	public Ticket(Long ticketId, Long type, String title, String description, String createdByUser, Long customerId,
-			String assignedToUser, Long priorityId, Long statusId, LocalDateTime statusUpdatedAt, Boolean deleteKey) {
-		super();
-		this.ticketId = ticketId;
-		this.type = type;
-		this.title = title;
-		this.description = description;
-		this.createdByUser = createdByUser;
-		this.customerId = customerId;
-		this.assignedToUser = assignedToUser;
-//		this.priorityId = priorityId;
-		this.statusId = statusId;
-		this.statusUpdatedAt = statusUpdatedAt;
-		this.deleteKey = deleteKey;
-	}
-
-	public Ticket() {
-		super();		
+	public void setCreatedByUserId(Long createdByUserId) {
+		this.createdByUserId = createdByUserId;
 	}
 
 	@Override
@@ -169,22 +225,11 @@ public class Ticket {
 				+ ", createdByUser=" + createdByUser + ", customerId=" + customerId + ", assignedToUser="
 				+ assignedToUser + ", priorityId=" 
 //				+ priorityId 
-				+ ", statusId=" + statusId + ", statusUpdatedAt="
+				+ ", statusId=" 
+//				+ statusId 
+				+ ", statusUpdatedAt="
 				+ statusUpdatedAt + ", deleteKey=" + deleteKey + "]";
 	}
 	
-//	public Ticket copyTicket(Ticket copyTicket) {
-//		this.ticketId = ticketId;
-//		this.type = type;
-//		this.title = title;
-//		this.description = description;
-//		this.createdByUser = createdByUser;
-//		this.customerId = customerId;
-//		this.assignedToUser = assignedToUser;
-//		this.priorityId = priorityId;
-//		this.statusId = statusId;
-//		this.statusUpdatedAt = statusUpdatedAt;
-//		this.deleteKey = deleteKey;
-//	}
 
 }

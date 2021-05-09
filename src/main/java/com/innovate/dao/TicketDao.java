@@ -1,5 +1,6 @@
 package com.innovate.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public interface TicketDao{
 	
 	public List<Ticket> getAllTicket();
 	
-	public List<Ticket> getFilteredTickets(String assignedToUser,Long customerId,Long statusId);
+	public List<Ticket> getFilteredTickets(Long assignedToUser,Long customerId,Long statusId);
 	
 	public Ticket getTicket(Long ticketId);
 	
@@ -23,10 +24,12 @@ public interface TicketDao{
 	
 	public int updateStatus(Long ticketId,Long statusId);
 	
-	public int assignTicket(Long ticketId,String assignedToUser);
+	public int assignTicket(Long ticketId,Long assignedToUser);
 	
 	public int deleteTicket(Long ticketId);
 	
 	public Response addResponse(Long ticketId,String responseText);
+
+	public int closeResolvedTasks(LocalDateTime dateBefore30Days);
 
 }
