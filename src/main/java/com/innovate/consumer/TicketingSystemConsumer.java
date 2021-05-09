@@ -24,13 +24,11 @@ public class TicketingSystemConsumer {
 	
     @RabbitListener(queues = MessagingConfig.EMAIL_QUEUE)
     public void consumeMessageFromEmailQueue(MessageEntity response) throws IOException {
-        System.out.println("Message recieved from queue : " + response);
 			EmailUtility.sendResponseMail(response.getTicketId(), response.getResponseText(),response.getEmailAddress());
     }
     
     @RabbitListener(queues = MessagingConfig.CLOSE_TASK_QUEUE)
     public void consumeMessageFromCloseTaskQueue(MessageEntity message) throws IOException {
-        System.out.println("Message recieved from queue : " + message);
         LocalDateTime dateBefore30Days = LocalDateTime.of(message.getYear(), message.getMonth(), message.getDate(), 0, 0);
         ticketingSystemService.closeResolvedTasks(dateBefore30Days);
     }

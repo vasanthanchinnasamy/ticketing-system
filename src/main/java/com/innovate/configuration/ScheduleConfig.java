@@ -23,8 +23,7 @@ public class ScheduleConfig {
 	
 	
 	
-	@Scheduled(cron = "45 15 * * * ?")
-//	@Scheduled(fixedDelay = 100000)
+	@Scheduled(cron = "${cron.expression}")
 	public void closeResolvedTasks() {
 		LocalDateTime dateBefore30Days = LocalDate.now().minusDays(30).atTime(0, 0);
 		MessageEntity message = new MessageEntity();
@@ -32,7 +31,6 @@ public class ScheduleConfig {
 		message.setMonth(dateBefore30Days.getMonthValue());
 		message.setYear(dateBefore30Days.getYear());
 		template.convertAndSend(MessagingConfig.EXCHANGE, MessagingConfig.CLOSE_TASK_ROUTING_KEY, message);
-	    System.out.println("schedule tasks using cron jobs - " + LocalDateTime.now());
 	}
 
 }

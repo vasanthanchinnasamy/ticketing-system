@@ -42,7 +42,6 @@ public class Ticket {
 	
 	private String description;
 	
-//	@JsonManagedReference(value="createdByUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_user_id")
 	private User createdByUser;
@@ -53,17 +52,14 @@ public class Ticket {
 	private Customer customer;
 	
 	
-//	@JsonManagedReference(value="assignedToUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to_user_id")
 	private User assignedToUser;
 	
-//	@JsonManagedReference(value="priorityRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "priority_id")
 	private Priority priority;
 	
-//	@JsonManagedReference(value="statusRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id")
 	private Status status;
@@ -236,17 +232,6 @@ public class Ticket {
 		this.customer = customer;
 	}
 
-	@Override
-	public String toString() {
-		return "Ticket [ticketId=" + ticketId + ", type=" + type + ", title=" + title + ", description=" + description
-				+ ", createdByUser=" + createdByUser + ", customerId=" + customerId + ", assignedToUser="
-				+ assignedToUser + ", priorityId=" 
-//				+ priorityId 
-				+ ", statusId=" 
-//				+ statusId 
-				+ ", statusUpdatedAt="
-				+ statusUpdatedAt + ", deleteKey=" + deleteKey + "]";
-	}
 	
 
 }

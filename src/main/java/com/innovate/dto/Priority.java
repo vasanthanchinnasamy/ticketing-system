@@ -34,9 +34,6 @@ public class Priority {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-//  @Size(min = 2, max = 6)
-  @Fetch(FetchMode.SELECT)
-  @BatchSize(size = 30)
     private List<Ticket> tickets = new ArrayList<>();
 
 	public long getPriorityId() {
