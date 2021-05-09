@@ -28,7 +28,7 @@ public class Priority {
 	private String priorityName;
 	
 	
-	@JsonBackReference
+	@JsonBackReference(value="priorityRef")
 	@OneToMany(
             mappedBy = "priority",
             cascade = CascadeType.ALL,

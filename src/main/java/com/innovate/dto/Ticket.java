@@ -39,24 +39,24 @@ public class Ticket {
 	
 	private String description;
 	
-	@JsonManagedReference
+	@JsonManagedReference(value="createdByUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_user_id")
 	private User createdByUser;
 	
 	private Long customerId;
 	
-	@JsonManagedReference
+	@JsonManagedReference(value="assignedToUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to_user_id")
 	private User assignedToUser;
 	
-	@JsonManagedReference
+	@JsonManagedReference(value="priorityRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "priority_id")
 	private Priority priority;
 	
-	@JsonManagedReference
+	@JsonManagedReference(value="statusRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id")
 	private Status status;

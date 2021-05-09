@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,13 @@ class TicketingSystemApplicationTests {
 	void closeResolvedTasks() {
 		LocalDateTime dateBefore30Days = LocalDate.now().minusDays(30).atTime(0, 0);
 		int ticketList = ticketDao.closeResolvedTasks(dateBefore30Days);
+		System.out.println(ticketList);
+		
+	}
+	
+	@Test
+	void assignTicketBasedOnLoad() {
+		Optional<Object> ticketList = ticketDao.assignTicketBasedOnLoad();
 		System.out.println(ticketList);
 		
 	}

@@ -3,6 +3,7 @@ package com.innovate.dao;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.innovate.dto.Response;
 import com.innovate.dto.Ticket;
@@ -31,5 +32,7 @@ public interface TicketDao{
 	public Response addResponse(Long ticketId,String responseText);
 
 	public int closeResolvedTasks(LocalDateTime dateBefore30Days);
+	
+	public Optional<Object> assignTicketBasedOnLoad();
 
 }

@@ -28,7 +28,7 @@ public class Status {
 	private String statusName;
 	
 	
-	@JsonBackReference
+	@JsonBackReference(value="ticketsRef")
 	@OneToMany(
             mappedBy = "status",
             cascade = CascadeType.ALL,

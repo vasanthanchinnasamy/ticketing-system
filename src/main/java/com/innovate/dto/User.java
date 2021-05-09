@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
@@ -31,7 +32,7 @@ public class User {
 	private String userName;
 	
 	
-	@JsonBackReference
+	@JsonBackReference(value="assignedTicketsRef")
 	@OneToMany(
             mappedBy = "assignedToUser",
             cascade = CascadeType.ALL,
@@ -40,7 +41,7 @@ public class User {
     private List<Ticket> assignedTickets = new ArrayList<>();
 	
 	
-	@JsonBackReference
+	@JsonBackReference(value="createdTicketsRef")
 	@OneToMany(
             mappedBy = "createdByUser",
             cascade = CascadeType.ALL,
@@ -48,6 +49,9 @@ public class User {
             orphanRemoval = true
     )
     private List<Ticket> createdTickets = new ArrayList<>();
+	
+	@Transient
+	private long assignedTicketCount;
 
 	public long getUserId() {
 		return userId;
@@ -80,6 +84,15 @@ public class User {
 	public void setCreatedTickets(List<Ticket> createdTickets) {
 		this.createdTickets = createdTickets;
 	}
+
+	public long getAssignedTicketCount() {
+		return assignedTicketCount;
+	}
+
+	public void setAssignedTicketCount(long assignedTicketCount) {
+		this.assignedTicketCount = assignedTicketCount;
+	}
+	
 	
 	
 }

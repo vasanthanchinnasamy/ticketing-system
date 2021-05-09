@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,6 +31,14 @@ public class TicketDaoImpl implements TicketDao{
 
 	@Override
 	public Ticket addTicket(Ticket ticket) {
+		if(Objects.isNull(ticket.getAssignedToUser())) {
+			Optional<Object> resultUser = assignTicketBasedOnLoad();
+			resultUser.ifPresent(userId->{
+				User user = new User();
+				user.setUserId(Long.parseLong(userId.toString()));
+				ticket.setAssignedToUser(user);
+			});
+		}
 		entityManager.persist(ticket);
 		return ticket;
 	}
@@ -148,5 +158,16 @@ public class TicketDaoImpl implements TicketDao{
 				.executeUpdate();
 		return updateCount;
 	}
+
+
+	@Override
+	public Optional<Object> assignTicketBasedOnLoad() {
+		Object userId = entityManager.createNativeQuery("select users.user_id assigned_ticket_count from users\r\n"
+				+ "left join ticket on ticket.assigned_to_user_id = users.user_id\r\n"
+				+ "group by users.user_id order by count(ticket.ticket_id) limit 1;").getSingleResult();
+		return Optional.ofNullable(userId);
+	}
+	
+	
 
 }
