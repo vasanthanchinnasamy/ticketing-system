@@ -32,7 +32,7 @@ public class User {
 	private String userName;
 	
 	
-	@JsonBackReference(value="assignedTicketsRef")
+	@JsonBackReference(value="assignedToUserRef")
 	@OneToMany(
             mappedBy = "assignedToUser",
             cascade = CascadeType.ALL,

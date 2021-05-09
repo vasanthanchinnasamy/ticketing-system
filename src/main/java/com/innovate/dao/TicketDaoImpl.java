@@ -31,13 +31,17 @@ public class TicketDaoImpl implements TicketDao{
 
 	@Override
 	public Ticket addTicket(Ticket ticket) {
-		if(Objects.isNull(ticket.getAssignedToUser())) {
+		if(Objects.isNull(ticket.getAssignedToUserId())) {
 			Optional<Object> resultUser = assignTicketBasedOnLoad();
 			resultUser.ifPresent(userId->{
 				User user = new User();
 				user.setUserId(Long.parseLong(userId.toString()));
 				ticket.setAssignedToUser(user);
 			});
+		}else {
+			User user = new User();
+			user.setUserId(ticket.getAssignedToUserId());
+			ticket.setAssignedToUser(user);
 		}
 		entityManager.persist(ticket);
 		return ticket;

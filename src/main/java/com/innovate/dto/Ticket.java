@@ -23,10 +23,13 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Where(clause = "delete_key = false")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "ticketId") 
 public class Ticket {
 	
 	@Id
@@ -39,24 +42,24 @@ public class Ticket {
 	
 	private String description;
 	
-	@JsonManagedReference(value="createdByUserRef")
+//	@JsonManagedReference(value="createdByUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_user_id")
 	private User createdByUser;
 	
 	private Long customerId;
 	
-	@JsonManagedReference(value="assignedToUserRef")
+//	@JsonManagedReference(value="assignedToUserRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to_user_id")
 	private User assignedToUser;
 	
-	@JsonManagedReference(value="priorityRef")
+//	@JsonManagedReference(value="priorityRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "priority_id")
 	private Priority priority;
 	
-	@JsonManagedReference(value="statusRef")
+//	@JsonManagedReference(value="statusRef")
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id")
 	private Status status;
