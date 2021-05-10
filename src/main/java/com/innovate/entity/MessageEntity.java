@@ -1,8 +1,5 @@
 package com.innovate.entity;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Transient;
 
 public class MessageEntity {
 	
@@ -13,9 +10,9 @@ public class MessageEntity {
 	
 	private int date;
 	
-	private String responseText;
-	
 	private Long ticketId;
+	
+	private String responseText;	
 	
 	private String emailAddress;
 

@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import com.innovate.dto.Response;
-import com.innovate.dto.Ticket;
 import com.innovate.entity.MessageEntity;
 
 @Configuration

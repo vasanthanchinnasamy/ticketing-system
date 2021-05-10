@@ -1,10 +1,8 @@
 package com.innovate.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
-import com.innovate.dto.Response;
 import com.innovate.dto.Ticket;
 
 public interface TicketingSystemService {
@@ -30,6 +28,6 @@ public interface TicketingSystemService {
 	
 	public Map<String, Object> addResponse(Long ticketId,String responseText);
 	
-	public Map<String, Object> closeResolvedTasks(LocalDateTime dateBefore30Days);
+	public Map<String, Object> closeResolvedTasks(LocalDateTime dateBefore30Days) throws Exception;
 
 }

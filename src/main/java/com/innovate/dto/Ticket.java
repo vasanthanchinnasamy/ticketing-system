@@ -14,17 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Where;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -230,6 +224,16 @@ public class Ticket {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	@Override
+	public String toString() {
+		return "Ticket [ticketId=" + ticketId + ", type=" + type + ", title=" + title + ", description=" + description
+				+ ", createdByUser=" + createdByUser + ", customer=" + customer + ", assignedToUser=" + assignedToUser
+				+ ", priority=" + priority + ", status=" + status + ", statusUpdatedAt=" + statusUpdatedAt
+				+ ", deleteKey=" + deleteKey + ", responses=" + responses + ", priorityId=" + priorityId + ", statusId="
+				+ statusId + ", assignedToUserId=" + assignedToUserId + ", createdByUserId=" + createdByUserId
+				+ ", customerId=" + customerId + "]";
 	}
 
 	
